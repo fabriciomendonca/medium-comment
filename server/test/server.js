@@ -49,19 +49,19 @@ describe('Test the API for comment a highlighted text', () => {
       .end(done);
   });
 
-  it('should create a post', (done) => {
+  xit('should create a post', (done) => {
+    
+  });
+
+  xit('should get the post content', (done) => {
 
   });
 
-  it('should get the post content', (done) => {
+  xit('should create a comment for a post', (done) => {
 
   });
 
-  it('should create a comment for a post', (done) => {
-
-  });
-
-  it('should create a highlight for a post', (done) => {
+  xit('should create a highlight for a post', (done) => {
     // A highlight should have
     // user
     // text
