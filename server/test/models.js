@@ -27,6 +27,7 @@ describe('Test the MongoDB models', () => {
 
   it('should create a post with a fake userId', (done) => {
     const post = new BlogPost({
+      title: 'New post',
       text: 'This is a brand new blog post',
       createdAt: new Date().getMilliseconds(),
       _createdBy: new ObjectID()
@@ -34,6 +35,7 @@ describe('Test the MongoDB models', () => {
 
     post.save()
       .then(res => {
+        expect(res.title).toBe('New post')
         expect(res.text).toBe('This is a brand new blog post');
         expect(res.createdAt).toExist();
         return done();
