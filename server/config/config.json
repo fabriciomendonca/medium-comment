@@ -1,0 +1,10 @@
+{
+  "development": {
+    "MONGODB_URI": "mongodb://localhost:27017/medium-comment",
+    "PORT": 3050
+  },
+  "test": {
+    "MONGODB_URI": "mongodb://localhost:27017/medium-comment-test",
+    "PORT": 3050
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "medium-comment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "server:dev": "nodemon --exec npm start",
+    "test:server": "export NODE_ENV=test || set NODE_ENV=test && mocha server/test/**/*.js",
+    "test:server:watch": "nodemon --exec npm run test:server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "expect": "^1.20.2",
+    "mocha": "^3.4.1",
+    "nodemon": "^1.11.0",
+    "supertest": "^3.0.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "mongodb": "^2.2.26",
+    "mongoose": "^4.9.9"
+  }
+}
