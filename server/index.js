@@ -4,6 +4,8 @@ const express = require('express'),
       mongoose = require('./db/mongoose'),
       bodyParser = require('body-parser');
 
+const auth = require('./middleware/auth');
+
 const {
   createRoutes
 } = require('./routes/routes');

@@ -29,7 +29,7 @@ describe('Test the MongoDB models', () => {
     const post = new BlogPost({
       title: 'New post',
       text: 'This is a brand new blog post',
-      createdAt: new Date().getMilliseconds(),
+      createdAt: new Date().getTime(),
       _createdBy: new ObjectID()
     });
 
@@ -46,7 +46,7 @@ describe('Test the MongoDB models', () => {
   it('should create a comment with a fake postId and userId', (done) => {
     const comment = new Comment({
       text: 'This is a comment',
-      createdAt: new Date().getMilliseconds(),
+      createdAt: new Date().getTime(),
       _createdBy: new ObjectID(),
       _blogPost: new ObjectID()
     });
@@ -67,7 +67,7 @@ describe('Test the MongoDB models', () => {
       text: 'text highlighted',
       startIndex: 10,
       endIndex: 20,
-      createdAt: new Date().getMilliseconds(),
+      createdAt: new Date().getTime(),
       _blogPost: new ObjectID(),
       _createdBy: new ObjectID()
     });
@@ -90,7 +90,7 @@ describe('Test the MongoDB models', () => {
       text: 'text highlighted',
       startIndex: 10,
       endIndex: 20,
-      createdAt: new Date().getMilliseconds(),
+      createdAt: new Date().getTime(),
       _blogPost: new ObjectID(),
       _comment: new ObjectID(),
       _createdBy: new ObjectID()

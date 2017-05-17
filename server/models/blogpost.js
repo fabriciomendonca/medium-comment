@@ -21,7 +21,7 @@ const BlogPost = mongoose.model('blogpost', new Schema({
   _createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    red: 'user'
+    ref: 'user'
   }
 }));
 
