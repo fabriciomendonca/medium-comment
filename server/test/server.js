@@ -7,6 +7,8 @@ const app = require('../index');
 // Models
 const User = require('../models/user');
 const BlogPost = require('../models/blogpost');
+const Comment = require('../models/comment');
+const Highlight = require('../models/posthighlight');
 
 const user = {
   _id: new ObjectID(),
@@ -30,6 +32,60 @@ const postList = [
     _createdBy: user._id.toHexString()
   }
 ];
+
+const commentList = [
+  {
+    _id: new ObjectID(),
+    text: 'New comment for post 0',
+    _blogPost: postList[0]._id,
+    _createdBy: user._id.toHexString()
+  },
+  {
+    _id: new ObjectID(),
+    text: 'New comment for post 1',
+    _blogPost: postList[1]._id,
+    _createdBy: user._id.toHexString()
+  },
+  {
+    _id: new ObjectID(),
+    text: 'Another new comment for post 0',
+    _blogPost: postList[0]._id,
+    _createdBy: user._id.toHexString()
+  },
+  {
+    _id: new ObjectID(),
+    text: 'Another comment for post 0!!!',
+    _blogPost: postList[0]._id,
+    _createdBy: user._id.toHexString()
+  },
+  {
+    _id: new ObjectID(),
+    text: 'Another comment for post 1',
+    _blogPost: postList[1]._id,
+    _createdBy: user._id.toHexString()
+  }
+];
+
+const highLights = [
+  {
+    _id: new ObjectID(),
+    text: 'is the content',
+    createdAt: new Date().getTime(),
+    startIndex: 5,
+    endIndex: 18,
+    _createdBy: user._id,
+    _blogPost: postList[0]._id.toHexString()
+  },
+  {
+    _id: new ObjectID(),
+    text: 'of the second',
+    createdAt: new Date().getTime(),
+    startIndex: 5,
+    endIndex: 18,
+    _createdBy: user._id,
+    _blogPost: postList[1]._id.toHexString()
+  }
+]
 
 describe('Test the API for comment a highlighted text', () => {
   beforeEach(done => {
@@ -117,16 +173,76 @@ describe('Test the API for comment a highlighted text', () => {
       .end(done);
   });
 
-  xit('should create a comment for a post', (done) => {
-
+  beforeEach(done => {
+    Comment.remove({})
+      .then(() => {
+        return Comment.insertMany(commentList);
+      })
+      .then(() => done());
   });
 
-  xit('should create a highlight for a post', (done) => {
-    // A highlight should have
-    // user
-    // text
-    // startIndex
-    // endIndex
-    // related comment
+  it('should create a comment for a post (POST /posts/:id/comments', (done) => {
+    const body = {
+      text: 'A simple comment for a post',
+      _blogPost: postList[0]._id.toHexString(),
+      _createdBy: user._id.toHexString()
+    };
+    request(app)
+      .post(`/posts/${postList[0]._id.toHexString()}/comments`)
+      .send(body)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.text).toBe(body.text);
+        expect(res.body.createdAt).toExist();
+      })
+      .end(done);
+  });
+
+  it('should get a post comments (GET /posts/:id/comments)', done => {
+    request(app)
+      .get(`/posts/${postList[1]._id.toHexString()}/comments`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.length).toBe(2);
+        expect(res.body[0].text).toBe(commentList[1].text);
+      })
+      .end(done);
+  });
+
+  beforeEach(done => {
+    Highlight.remove({})
+      .then(() => {
+        return Highlight.insertMany(highLights);
+      })
+      .then(() => {
+        done()
+      });
+  });
+
+  it('should create a highlight for a post (POST /posts/:id/highlights)', (done) => {
+    const body = {
+      text: 'of the first',
+      startIndex: 6,
+      endIndex: 18
+    };
+    
+    request(app)
+      .post(`/posts/${postList[0]._id.toHexString()}/highlights`)
+      .send(body)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.text).toBe(body.text);
+      })
+      .end(done);
+  });
+
+  it('should get posts highlights', done => {
+    request(app)
+      .get(`/posts/${postList[1]._id.toHexString()}/highlights`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.length).toBe(1);
+      })
+      .end(done);
   });
 });

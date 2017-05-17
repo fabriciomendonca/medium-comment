@@ -11,12 +11,13 @@ module.exports = {
     app.get('/users/:id', auth, UserController.get);
     app.post('/users', auth, UserController.create);
 
+    app.post('/posts/:id/comments', auth, PostsController.createComment);
+    app.get('/posts/:id/comments', auth, PostsController.getComments);
+    app.get('/posts/:id/highlights', auth, PostsController.getHighlights);
+    app.post('/posts/:id/highlights', auth, PostsController.createHighlight);
     app.get('/posts/:id', auth, PostsController.get);
     app.get('/posts', auth, PostsController.getAll);
     app.post('/posts', auth, PostsController.create);
-
-    //app.post('/posts/:id/comments', auth, PostController.createComment);
-    //app.get('/posts/:id/comments', auth, PostController.getComments);
   }
 }
 
