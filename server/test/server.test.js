@@ -260,4 +260,14 @@ describe('Test the API for comment a highlighted text', () => {
       })
       .end(done);
   });
+
+  it('should delete a post', done => {
+    request(app)
+      .delete(`/posts/${postList[0]._id.toHexString()}`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body._id).toBe(postList[0]._id.toHexString());
+      })
+      .end(done);
+  });
 });

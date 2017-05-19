@@ -212,5 +212,21 @@ module.exports = {
       .catch(next);
     })
     .catch(next);
+  },
+
+  delete (req, res, next) {
+    const {
+      id
+    } = req.params;
+
+    if (!ObjectID.isValid(id)) {
+      res.status(404).send();
+    }
+
+    BlogPost.findByIdAndRemove(id)
+      .then(data => {
+        res.status(200).send(data);
+      })
+      .catch(next);
   }
 }

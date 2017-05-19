@@ -17,6 +17,7 @@ module.exports = {
     app.post('/posts/:id/highlights', auth, PostsController.createHighlight);
     app.patch('/posts/:id/highlights', auth, PostsController.updateHighlight);
     app.get('/posts/:id', auth, PostsController.get);
+    app.delete('/posts/:id', auth, PostsController.delete);
     app.get('/posts', auth, PostsController.getAll);
     app.post('/posts', auth, PostsController.create);
   }
