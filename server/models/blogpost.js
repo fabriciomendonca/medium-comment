@@ -22,6 +22,12 @@ const BlogPost = mongoose.model('blogpost', new Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'user'
+  },
+  comments: {
+    type: Array
+  },
+  highlights: {
+    type: Array
   }
 }));
 

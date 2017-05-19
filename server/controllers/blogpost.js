@@ -47,8 +47,22 @@ module.exports = {
     checkId(id, res);
 
     BlogPost.findById(id)
-      .then(data => {
-        res.status(200).send(data);
+      .then(post => {
+        Comment.find({
+          _blogPost: post._id
+        })
+        .then(comments => {
+          post.comments = comments;
+          
+          return Highlight.find({
+            _blogPost: post._id
+          });
+        })
+        .then(highlights => {
+          post.highlights = highlights;
+          res.status(200).send(post);
+        })
+        .catch(next);
       })
       .catch(next);
   },

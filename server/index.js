@@ -15,6 +15,19 @@ const {
 
 const app = express();
 
+// CORS
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+
+  if (req.method === 'OPTIONS') {
+    res.send(200);
+  }
+
+  next();
+});
+
 // Use the bodyParser.json() middleware
 app.use(bodyParser.json());
 
