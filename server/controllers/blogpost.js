@@ -144,7 +144,7 @@ module.exports = {
     });
 
     let comment;
-    if (req.body._comment) {
+    if (req.body._comment || req.body.commentText) {
       comment = new Comment({
         _id: new ObjectID(),
         text: req.body.commentText,
@@ -155,6 +155,7 @@ module.exports = {
     }
     
     hl._comment = comment ? comment._id.toHexString() : null;
+    hl.commentText = comment ? comment.text : null;
     
     hl.save()
       .then(data => {
@@ -166,5 +167,50 @@ module.exports = {
         res.status(200).send(data);
       })
       .catch(next);
+  },
+
+  updateHighlight (req, res, next) {
+    const {
+      _id,
+      commentText
+    } = req.body;
+
+    if (commentText.trim() === '') next();
+
+    const {
+      id
+    } = req.params;
+
+    if (!ObjectID.isValid(id)) {
+      res.status(404).send();
+    }
+    let comment;
+    Highlight.findById(_id).then(data => {
+      if (!data._comment) {
+        comment = new Comment({
+          _id: new ObjectID(),
+          text: commentText,
+          createdAt: new Date().getTime(),
+          _blogPost: id,
+          _createdBy: req.user._id
+        });
+
+        comment.save();
+      }
+
+      const _comment = comment ? comment.id : data._comment;
+      Highlight.findOneAndUpdate({
+        _id
+      }, { 
+        $set: {
+          commentText,
+          _comment
+        }
+      }, {new: true}).then(data => {
+        res.status(200).send(data);
+      })
+      .catch(next);
+    })
+    .catch(next);
   }
 }

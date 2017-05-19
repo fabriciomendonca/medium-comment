@@ -245,4 +245,19 @@ describe('Test the API for comment a highlighted text', () => {
       })
       .end(done);
   });
+
+  it('should update a highlight text', done => {
+    const highlight = {
+      _id: highLights[0]._id,
+      commentText: 'new text'
+    };
+    request(app)
+      .patch(`/posts/${postList[0]._id.toHexString()}/highlights`)
+      .send(highlight)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.commentText).toBe(highlight.commentText)
+      })
+      .end(done);
+  });
 });

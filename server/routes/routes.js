@@ -15,6 +15,7 @@ module.exports = {
     app.get('/posts/:id/comments', auth, PostsController.getComments);
     app.get('/posts/:id/highlights', auth, PostsController.getHighlights);
     app.post('/posts/:id/highlights', auth, PostsController.createHighlight);
+    app.patch('/posts/:id/highlights', auth, PostsController.updateHighlight);
     app.get('/posts/:id', auth, PostsController.get);
     app.get('/posts', auth, PostsController.getAll);
     app.post('/posts', auth, PostsController.create);
