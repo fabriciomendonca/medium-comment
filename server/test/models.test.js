@@ -65,8 +65,8 @@ describe('Test the MongoDB models', () => {
   it('should create a highlight with a fake userId without a comment', (done) => {
     const highlight = new PostHighlight({
       text: 'text highlighted',
-      startIndex: 10,
-      endIndex: 20,
+      startOffset: 10,
+      endOffset: 20,
       createdAt: new Date().getTime(),
       _blogPost: new ObjectID(),
       _createdBy: new ObjectID()
@@ -75,8 +75,8 @@ describe('Test the MongoDB models', () => {
     highlight.save()
       .then(res => {
         expect(res.text).toBe('text highlighted');
-        expect(res.startIndex).toBe(10);
-        expect(res.endIndex).toBe(20);
+        expect(res.startOffset).toBe(10);
+        expect(res.endOffset).toBe(20);
         expect(res.createdAt).toExist();
         expect(res._blogPost).toExist();
         expect(res._createdBy).toExist();
@@ -88,8 +88,8 @@ describe('Test the MongoDB models', () => {
   it('should create a highlight with a fake userId and with a comment', (done) => {
     const highlight = new PostHighlight({
       text: 'text highlighted',
-      startIndex: 10,
-      endIndex: 20,
+      startOffset: 10,
+      endOffset: 20,
       createdAt: new Date().getTime(),
       _blogPost: new ObjectID(),
       _comment: new ObjectID(),
@@ -99,8 +99,8 @@ describe('Test the MongoDB models', () => {
     highlight.save()
       .then(res => {
         expect(res.text).toBe('text highlighted');
-        expect(res.startIndex).toBe(10);
-        expect(res.endIndex).toBe(20);
+        expect(res.startOffset).toBe(10);
+        expect(res.endOffset).toBe(20);
         expect(res.createdAt).toExist();
         expect(res._blogPost).toExist();
         expect(res._createdBy).toExist();

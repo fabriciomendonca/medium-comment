@@ -130,14 +130,14 @@ module.exports = {
 
     const {
       text,
-      startIndex,
-      endIndex
+      startOffset,
+      endOffset
     } = req.body;
 
     var hl = new Highlight({
       text,
-      startIndex,
-      endIndex,
+      startOffset,
+      endOffset,
       createdAt: new Date().getTime(),
       _blogPost: id,
       _createdBy: req.user._id,

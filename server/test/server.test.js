@@ -71,8 +71,8 @@ const highLights = [
     _id: new ObjectID(),
     text: 'is the content',
     createdAt: new Date().getTime(),
-    startIndex: 5,
-    endIndex: 18,
+    startOffset: 5,
+    endOffset: 18,
     _createdBy: user._id,
     _blogPost: postList[0]._id.toHexString()
   },
@@ -80,8 +80,8 @@ const highLights = [
     _id: new ObjectID(),
     text: 'of the second',
     createdAt: new Date().getTime(),
-    startIndex: 5,
-    endIndex: 18,
+    startOffset: 5,
+    endOffset: 18,
     _createdBy: user._id,
     _blogPost: postList[1]._id.toHexString()
   }
@@ -222,8 +222,8 @@ describe('Test the API for comment a highlighted text', () => {
   it('should create a highlight for a post (POST /posts/:id/highlights)', (done) => {
     const body = {
       text: 'of the first',
-      startIndex: 6,
-      endIndex: 18
+      startOffset: 6,
+      endOffset: 18
     };
     
     request(app)
