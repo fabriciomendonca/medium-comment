@@ -161,9 +161,10 @@ module.exports = {
       .then(data => {
         if (comment) {
           comment.save()
-            .then(() => res.status(200).send(data));
+            .then(() => res.status(200).send(data))
+            .catch(next);
         }
-
+        
         res.status(200).send(data);
       })
       .catch(next);
