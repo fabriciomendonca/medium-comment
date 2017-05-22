@@ -208,34 +208,33 @@ module.exports = {
     if (!ObjectID.isValid(id)) {
       res.status(404).send();
     }
-    let comment;
-    Highlight.findById(_id).then(data => {
-      if (!data._comment && commentText) {
-        comment = new Comment({
-          _id: new ObjectID(),
-          text: commentText,
-          createdAt: new Date().getTime(),
-          _blogPost: id,
-          _createdBy: req.user._id
-        });
 
-        comment.save();
-      }
+    Highlight.findById(_id)
+      .populate('_comment')
+      .then(highlight => {
+        let promises = [], comment;
+        
+        promises.push(Highlight.findByIdAndUpdate(id, {commentText}));
 
-      const _comment = comment ? comment.id : data._comment;
-      Highlight.findOneAndUpdate({
-        _id
-      }, { 
-        $set: {
-          commentText,
-          _comment
+        if (!highlight._comment) {
+          comment = new Comment({
+            text: commentText,
+            createdAt: new Date().getTime(),
+            _createdBy: req.user._id
+          });
+
+          promises.push(comment);
+        } else {
+          promises.push(Comment.update({_id: highlight._comment}, {text: commentText}))
         }
-      }, {new: true}).then(data => {
-        res.status(200).send(data);
+        
+        Promise.all(promises)
+          .then((results) => {
+            console.log(results)
+            res.status(200).send(results[0])
+          });
       })
       .catch(next);
-    })
-    .catch(next);
   },
 
   delete (req, res, next) {
