@@ -248,16 +248,6 @@ module.exports = {
             })
           });
         }
-        /*
-        Promise.all(promises)
-          .then((results) => {
-            console.log(results[0])
-            res.status(200).send({
-              highlight,
-              comment
-            })
-          });
-        */
       })
       .catch(next);
   },
