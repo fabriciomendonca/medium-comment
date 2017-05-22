@@ -3,6 +3,7 @@ const { env } = require('./config/config');
 
 const express = require('express'),
       mongoose = require('./db/mongoose'),
+      helmet = require('helmet'),
       bodyParser = require('body-parser');
 
 // Auth middleware that returns a fixed user (email: test@test.com)
@@ -14,6 +15,8 @@ const {
 } = require('./routes/routes');
 
 const app = express();
+
+app.use(helmet());
 
 // CORS
 app.use(function(req, res, next) {
