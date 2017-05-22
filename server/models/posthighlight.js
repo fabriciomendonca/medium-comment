@@ -23,10 +23,6 @@ const PostHighlight = mongoose.model('post-highlight', new Schema({
     type: String,
     trim: true
   },
-  _blogPost: {
-    type: Schema.Types.ObjectId,
-    ref: 'blogpost'
-  },
   _comment: {
     type: Schema.Types.ObjectId,
     ref: 'comment'

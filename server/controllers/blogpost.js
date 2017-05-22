@@ -47,23 +47,22 @@ module.exports = {
     checkId(id, res);
 
     BlogPost.findById(id)
-      .then(post => {
-        Comment.find({
-          _blogPost: post._id
-        })
-        .then(comments => {
-          post.comments = comments;
-          
-          return Highlight.find({
-            _blogPost: post._id
-          });
-        })
-        .then(highlights => {
-          post.highlights = highlights;
-          res.status(200).send(post);
-        })
-        .catch(next);
+      .populate({
+        path: 'comments',
+        populate: {
+          path: '_createdBy',
+          model: 'user'
+        }
       })
+      .populate({
+        path: 'highlights',
+        populate: {
+          path: '_createdBy',
+          model: 'user'
+        }
+      })
+      .populate('_createdBy')
+      .then(post => res.status(200).send(post))
       .catch(next);
   },
 
@@ -80,13 +79,18 @@ module.exports = {
     const comment = new Comment({
       text,
       createdAt: new Date().getTime(),
-      _blogPost: id,
       _createdBy: req.user._id
     });
 
-    comment.save()
+    Promise.all([BlogPost.findById(id), comment.save()])
       .then(data => {
-        res.status(200).send(data);
+        const post = data[0];
+        post.comments.push(data[1]);
+        post.save()
+          .then(() => {
+            res.status(200).send(data[1])
+          })
+          .catch(next);
       })
       .catch(next);
   },
@@ -98,12 +102,18 @@ module.exports = {
 
     checkId(id, res);
 
-    Comment.find({
-      _blogPost: id
-    }).then(data => {
-      res.status(200).send(data);
-    })
-    .catch(next);
+    BlogPost.findById(id)
+      .populate({
+        path: 'comments',
+        populate: {
+          path: '_createdBy',
+          model: 'user'
+        }
+      })
+      .then(data => {
+        res.status(200).send(data.comments);
+      })
+      .catch(next);
   },
 
   getHighlights (req, res, next) {
@@ -113,12 +123,18 @@ module.exports = {
 
     checkId(id, res);
 
-    Highlight.find({
-      _blogPost: id
-    }).then(data => {
-      res.status(200).send(data);
-    })
-    .catch(next);
+    BlogPost.findById(id)
+      .populate({
+        path: 'highlights',
+        populate: {
+          path: '_createdBy',
+          model: 'user'
+        }
+      })
+      .then(data => {
+        res.status(200).send(data.highlights);
+      })
+      .catch(next);
   },
 
   createHighlight (req, res, next) {
@@ -139,7 +155,6 @@ module.exports = {
       startOffset,
       endOffset,
       createdAt: new Date().getTime(),
-      _blogPost: id,
       _createdBy: req.user._id,
     });
 
@@ -149,25 +164,33 @@ module.exports = {
         _id: new ObjectID(),
         text: req.body.commentText,
         createdAt: hl.createdAt,
-        _blogPost: hl._blogPost,
         _createdBy: hl._createdBy
       });
     }
     
     hl._comment = comment ? comment._id.toHexString() : null;
     hl.commentText = comment ? comment.text : null;
+
+    const promises = [hl];
+    if (comment) {
+      promises.push(comment);
+    }
     
-    hl.save()
-      .then(data => {
+    Promise.all(promises.map(p => p.save()))
+      .then((results) => {
+        const update = {
+          highlights: hl._id
+        };
         if (comment) {
-          comment.save()
-            .then(() => res.status(200).send(data))
-            .catch(next);
+          update.comments = comment._id;
         }
         
-        res.status(200).send(data);
+        BlogPost.update(
+          {_id: id},
+          {$push: update}
+        ).then(res.status(200).send(results[0]))
+        .catch(next);
       })
-      .catch(next);
   },
 
   updateHighlight (req, res, next) {
@@ -187,7 +210,7 @@ module.exports = {
     }
     let comment;
     Highlight.findById(_id).then(data => {
-      if (!data._comment) {
+      if (!data._comment && commentText) {
         comment = new Comment({
           _id: new ObjectID(),
           text: commentText,

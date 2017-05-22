@@ -13,12 +13,9 @@ const Comment = mongoose.model('comment', new Schema({
     required: true,
     default: 0
   },
-  _blogPost: {
-    type: Schema.Types.ObjectId,
-    ref: 'blogpost'
-  },
   _createdBy: {
     type: Schema.Types.ObjectId,
+    required: true,
     ref: 'user'
   }
 }));
