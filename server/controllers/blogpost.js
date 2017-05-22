@@ -188,7 +188,12 @@ module.exports = {
         BlogPost.update(
           {_id: id},
           {$push: update}
-        ).then(res.status(200).send(results[0]))
+        ).then(() => {
+          res.status(200).send({
+            highlight: results[0],
+            comment
+          });
+        })
         .catch(next);
       })
   },
@@ -213,8 +218,6 @@ module.exports = {
       .populate('_comment')
       .then(highlight => {
         let promises = [], comment;
-        
-        promises.push(Highlight.findByIdAndUpdate(id, {commentText}));
 
         if (!highlight._comment) {
           comment = new Comment({
@@ -222,17 +225,39 @@ module.exports = {
             createdAt: new Date().getTime(),
             _createdBy: req.user._id
           });
-
-          promises.push(comment);
+          
+          highlight._comment = comment;
+          Promise.all([comment.save(), highlight.save()])
+            .then(() => {
+              res.status(200).send({
+                highlight,
+                comment
+              });
+            });
         } else {
-          promises.push(Comment.update({_id: highlight._comment}, {text: commentText}))
+          highlight.commentText = commentText;
+          Promise.all([
+            Comment.findByIdAndUpdate(highlight._comment, {text: commentText}),
+            highlight.save()
+          ]).then(() => {
+            Comment.findById(highlight._comment).then(comment => {
+              res.status(200).send({
+                highlight,
+                comment
+              });
+            })
+          });
         }
-        
+        /*
         Promise.all(promises)
           .then((results) => {
-            console.log(results)
-            res.status(200).send(results[0])
+            console.log(results[0])
+            res.status(200).send({
+              highlight,
+              comment
+            })
           });
+        */
       })
       .catch(next);
   },
